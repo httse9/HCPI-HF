@@ -3,7 +3,7 @@
 
 ### Goal domain
 # train demonstration policy
-python train_demo_policy.py SafetyPointGoal5-v0 --total_timesteps 5000 --save_freq 5000
+python train_demo_policy.py SafetyPointGoal5-v0 --total_timesteps 5000000 --save_freq 1000000
 
 # generate set of preferences
 python generate_data.py SafetyPointGoal5-v0 --state_feature_available --min_t 5000000 --max_t 5000000 --beta 5 --n_demo 50 --return_thres 15
