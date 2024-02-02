@@ -16,7 +16,11 @@ pip install -e .
 cd ../stable-baselines3
 pip install -e .[docs,tests,extra]
 ```
-
+4. Install packages.
+```
+cd ..
+pip install -r requirements.txt
+```
 ---
 ## Usage:
 Refer to script.sh for examples of how to run the code.
