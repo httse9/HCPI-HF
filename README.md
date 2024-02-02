@@ -14,7 +14,7 @@ pip install -e .
 3. Install stable-baselines3
 ```
 cd ../stable-baselines3
-pip install -e .[docs,tests,extra]
+pip install -e .
 ```
 4. Install packages.
 ```
