@@ -23,4 +23,4 @@ pip install -r requirements.txt
 ```
 ---
 ## Usage:
-Refer to script.sh for examples of how to run the code.
+script.sh contains step by step instructions with all commands to generate main results of the paper.
