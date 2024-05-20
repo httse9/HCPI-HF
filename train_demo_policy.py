@@ -23,7 +23,7 @@ def candidate_selection(args, verbose=True):
     start_time = time.time()
 
     # checkpoint/monitor path
-    log_path = os.path.join("./candidate_selection", args.env_name, "true")
+    log_path = os.path.join("./candidate_selection", args.env_name, f"true-{args.lr}-{args.seed}")
     os.makedirs(log_path, exist_ok=True)
     Monitor.EXT = f"monitor_seed{args.seed}.csv"
 
@@ -43,7 +43,7 @@ def candidate_selection(args, verbose=True):
             net_arch=dict(pi=[128, 128], vf=[128, 128]))
 
     model = VaRPPO("MlpPolicy", env, n_rewards, verbose=1,
-        policy_kwargs=policy_kwargs, learning_rate=1e-4, n_steps=4000, seed=args.seed)
+        policy_kwargs=policy_kwargs, learning_rate=args.lr, n_steps=4000, seed=args.seed)
 
     print(model.policy)
 
@@ -59,9 +59,14 @@ if __name__ == "__main__":
     parser.add_argument("--save_freq", default=5000, type=int, help="Frequency of saving model checkpoint")
     parser.add_argument("--seed", type=int, default=0, help="Random Seed")
 
+    parser.add_argument("--lr", type=float, default=1e-4, help="learning rate")
+
     args = parser.parse_args()
 
     # array batch jobs
+
+    print("Training Demo Policy")
+    print("LR:", args.lr)
 
 
     candidate_selection(args)

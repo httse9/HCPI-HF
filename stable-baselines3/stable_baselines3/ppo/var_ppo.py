@@ -389,6 +389,9 @@ class VaRPPO(OnPolicyAlgorithm):
                 # Normalize advantage
                 advantages = rollout_data.advantages
 
+                ### Only need special treatment here for pgbroil and postpi, because we need to
+                ### select one reward sample out of a set of reward samples.
+                ### Other algorithms such as B-REX and T-REX do not have this problem.
                 if self.objective == "pgbroil":
                     # solve for sigma *
                     expected_return = self.rollout_buffer.get_average_return()
@@ -407,19 +410,13 @@ class VaRPPO(OnPolicyAlgorithm):
 
                     # !!! determine reward function lying at VaR Diff cutoff
 
-                    # another way
+                    # get estimate of expected return of the current policy
                     expected_return = self.rollout_buffer.get_average_return()
                     expected_return = th.tensor(expected_return, device=self.device)
 
-                    if self.expected_return_init is None:
-                        # expected_return + noise
-                        from stable_baselines3.common.evaluation import evaluate_policy_reward_dist
-                        expected_return_init = evaluate_policy_reward_dist(self, self.env, self.n_rewards, n_eval_episodes=4)
-                        self.expected_return_init = np.mean(expected_return_init, 0)[:-1]
-                        self.expected_return_init = th.tensor(self.expected_return_init, device=self.device)
-                        print(">>>", self.expected_return_init)
-
-                        # self.expected_return_init = th.zeros(self.n_rewards, device=self.device)
+                    # For postpi, ensure we provided the expected returns of the initial policy
+                    # under the set of reward samples.
+                    assert self.expected_return_init is not None
 
                     er_diff = expected_return - self.expected_return_init
 
@@ -514,9 +511,6 @@ class VaRPPO(OnPolicyAlgorithm):
         if self.clip_range_vf is not None:
             self.logger.record("train/clip_range_vf", clip_range_vf)
 
-        # switch objective (pretraining with pgbroil, then switch to VaR-EVD) !!!
-        if self.num_timesteps > 0.4 * self.total_timesteps:
-            self.objective = self.env.envs[0].mode
 
     def learn(
         self: SelfPPO,
