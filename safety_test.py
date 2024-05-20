@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 from scipy import stats
-from sklearn.utils import resample
 
 import matplotlib
 matplotlib.rcParams.update({'font.size': 13})
@@ -451,11 +450,14 @@ if __name__ == "__main__":
     if args.cp_comparison:
         for i, eps in enumerate([0, 0.25, 0.5, 0.75, 1]):
             print("POSTPI", eps, end=": ")
-            worse, accept_list, _, _ = postpi_safety_test(args.env_name, eps)
-            pg_worse , pg_accept_list, _, _ = baseline_safety_test(args.env_name, eps, alg="pgbroil")
+            worse, accept_list, _, _ = postpi_safety_test(args.env_name, eps, n_eps=[1000])
+            pg_worse , pg_accept_list, _, _ = baseline_safety_test(args.env_name, eps, alg="pgbroil", n_eps=[1000])
+            cpl_worse , cpl_accept_list, _, _ = baseline_safety_test(args.env_name, eps, alg="cpl", n_eps=[1000])
+
 
             print(worse, accept_list.mean(0))
             print(pg_worse, pg_accept_list.mean(0))
+            print(cpl_worse, cpl_accept_list.mean(0))
 
         quit()
 
@@ -463,8 +465,8 @@ if __name__ == "__main__":
 
         for i, eps in enumerate([0, 0.25, 0.5, 0.75, 1]):
             print("POSTPI", eps, end=": ")
-            worse , accept_list, wl, n_eps = postpi_safety_test(args.env_name, eps, n_eps=[5])
-            brex_worse, brex_accept_list, bwl, _ = brex_safety_test(args.env_name, eps, n_eps=[5])
+            worse , accept_list, wl, n_eps = postpi_safety_test(args.env_name, eps, n_eps=[20])
+            brex_worse, brex_accept_list, bwl, _ = brex_safety_test(args.env_name, eps, n_eps=[20])
 
             print(wl)
             # print(accept_list.mean(0))
@@ -489,16 +491,21 @@ if __name__ == "__main__":
         ### For BASELINES!!
         for mode, ret in zip(modes, true_returns):
             print(mode, end=": ")
-            print((ret < demo_returns_eps).astype(int).mean(1))
+
+            mean =  (ret < demo_returns_eps).astype(int).mean(1)
+            print("Mean", mean, end="    ")
+            
+            st_error = np.sqrt(mean * (1 - mean) / 20)
+            print("sterror", st_error)
         
         ### Probability of returning policies worse than intial policies
         ### For POSTPI
         plt.figure(dpi=300)
-        # plt.rcParams.update({'font.size': 22}) 
+        plt.rcParams.update({'font.size': 15}) 
         for i, eps in enumerate([0, 0.25, 0.5, 0.75, 1]):
             print("POSTPI", eps, end=": ")
             worse , accept_list, wl, n_eps = postpi_safety_test(args.env_name, eps)
-            print(worse, accept_list.mean(0))
+            print(worse, np.sqrt(worse * (1 - worse) / 20), accept_list.mean(0))
 
             color = colors[i]
             marker = markers[i]
@@ -511,7 +518,7 @@ if __name__ == "__main__":
         # plt.legend(loc='lower right')#, fontsize="small")
         plt.ylabel("Probablity of Returning a Policy")
         plt.xlabel("Number of Episodes for High Confidence Bounds")
-        plt.savefig(f"plots/prob_accept_{args.env_name}.png")
+        plt.savefig(f"plots/prob_accept_{args.env_name}.png", bbox_inches='tight')
 
     else:
         # Vision experiments
@@ -520,4 +527,4 @@ if __name__ == "__main__":
         for eps in [0, 0.25, 0.5, 0.75, 1]:
             print("POSTPI", eps, end=": ")
             worse , accept_list, _, _ = postpi_safety_test(args.env_name, eps)
-            print(worse, accept_list)
+            print(worse, accept_list.mean(0))
