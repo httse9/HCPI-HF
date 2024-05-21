@@ -511,7 +511,7 @@ if __name__ == "__main__":
             marker = markers[i]
             accept_mean = accept_list.mean(0)
             # accept_std = accept_list.std(0)
-            accept_sterror = accept_list.std(0) / np.sqrt(accept_list.shape[0])
+            accept_sterror = accept_list.std(0, ddof=1) / np.sqrt(accept_list.shape[0])
             plt.plot(n_eps, accept_mean, label=f"ε={eps}", color=color, marker=marker)
             plt.fill_between(n_eps, accept_mean - accept_sterror, accept_mean + accept_sterror, color=color, alpha=0.1)
 
