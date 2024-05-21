@@ -41,7 +41,7 @@ def candidate_selection(args, verbose=True):
             net_arch=dict(pi=[], vf=[]))
 
     model = VaRPPO("CnnPolicy", env, n_rewards, alpha=args.alpha, verbose=1,
-        policy_kwargs=policy_kwargs, learning_rate=args.lr, seed=args.seed)
+        policy_kwargs=policy_kwargs, learning_rate=args.lr, seed=args.seed, n_steps=4000)
 
     if args.mode == "dist":
         # POSTPI
