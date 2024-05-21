@@ -502,7 +502,7 @@ if __name__ == "__main__":
         for i, eps in enumerate([0, 0.25, 0.5, 0.75, 1]):
             print("POSTPI", eps, end=": ")
             worse , accept_list, wl, n_eps = postpi_safety_test(args.env_name, eps)
-            print(worse, np.sqrt(worse * (1 - worse) / 20), accept_list.mean(0))
+            print(worse, accept_list.mean(0))
 
             color = colors[i]
             marker = markers[i]
