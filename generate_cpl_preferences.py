@@ -4,22 +4,6 @@ import torch
 from stable_baselines3.ppo.var_ppo import VaRPPO
 from stable_baselines3 import PPO
 
-"""
-Problem with VaRPPO load. Should change to PPO load?
-
-In VarPPO load, when we train algorithms with only one reward, such as B-REX and T-REX,
-they have saved parameters such that the value network has output dimension of 1.
-
-However, during evaluation, when we want to evaluate them for a bunch of reward samples,
-we need to set the n_rewards to something like 400, e.g., to set the correct replay buffer size.
-Then, there's a mismatch between the dimensions of the newly intiailized value network and the 
-original value network saved in a checkpoint. That's why I overrode the n_rewards in the VaRPPO load code,
-and also disabled loading parameters of the value network.
-
-Here, the preferences generated are probably wrong, since we are using VaRPPO.load
-The value network becomes some randomly initialized thing, that's super wrong.
-"""
-
 gae_lambda = 0.95
 gamma = 0.99
 
