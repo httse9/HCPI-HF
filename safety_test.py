@@ -494,9 +494,6 @@ if __name__ == "__main__":
 
             mean =  (ret < demo_returns_eps).astype(int).mean(1)
             print("Mean", mean, end="    ")
-            
-            st_error = np.sqrt(mean * (1 - mean) / 20)
-            print("sterror", st_error)
         
         ### Probability of returning policies worse than intial policies
         ### For POSTPI
