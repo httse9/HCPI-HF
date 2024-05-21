@@ -1,6 +1,6 @@
 # High-Confidence Policy Improvement from Human Feedback
 ---
-## Installation:
+## Requirements:
 1. Create conda environment.
 ```
 conda create -n hcpihf python=3.9
@@ -22,5 +22,5 @@ cd ..
 pip install -r requirements.txt
 ```
 ---
-## Usage:
-script.sh contains step by step instructions with all commands to generate main results of the paper.
+## Training & Evaluation:
+script.sh contains step by step instructions with all commands to generate the main results of the paper.
